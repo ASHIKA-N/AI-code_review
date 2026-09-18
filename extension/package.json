@@ -1,0 +1,129 @@
+{
+  "name": "verireview-ai",
+  "displayName": "VeriReview AI",
+  "description": "Evidence-Based AI Code Review for Developers. Review before the reviewer.",
+  "version": "0.1.0",
+  "publisher": "verireview-local",
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "categories": [
+    "Linters",
+    "Other"
+  ],
+  "main": "./dist/src/extension.js",
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p .",
+    "lint": "eslint src test",
+    "format": "prettier --write src test package.json tsconfig.json",
+    "test": "npm run compile && node --test dist/test/*.test.js",
+    "vscode:prepublish": "npm run compile",
+    "package": "vsce package --allow-missing-repository"
+  },
+  "dependencies": {
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/vscode": "^1.95.0",
+    "typescript": "^5.7.0",
+    "eslint": "^9.0.0",
+    "typescript-eslint": "^8.0.0",
+    "prettier": "^3.4.0",
+    "@vscode/vsce": "^3.2.0"
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "verireview.reviewChanges",
+        "title": "VeriReview: Review My Changes"
+      },
+      {
+        "command": "verireview.reviewStaged",
+        "title": "VeriReview: Review Staged Changes"
+      },
+      {
+        "command": "verireview.reviewBranch",
+        "title": "VeriReview: Review Current Branch"
+      },
+      {
+        "command": "verireview.reviewFile",
+        "title": "VeriReview: Review Current File"
+      },
+      {
+        "command": "verireview.clear",
+        "title": "VeriReview: Clear Findings"
+      },
+      {
+        "command": "verireview.summary",
+        "title": "VeriReview: Open Review Summary"
+      },
+      {
+        "command": "verireview.configure",
+        "title": "VeriReview: Configure Backend"
+      },
+      {
+        "command": "verireview.output",
+        "title": "VeriReview: Show Output"
+      },
+      {
+        "command": "verireview.health",
+        "title": "VeriReview: Check Backend Connection"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "verireview",
+          "title": "VeriReview",
+          "icon": "media/review.svg"
+        }
+      ]
+    },
+    "views": {
+      "verireview": [
+        {
+          "id": "verireview.findings",
+          "name": "Review Findings"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "VeriReview",
+      "properties": {
+        "verireview.backendUrl": {
+          "type": "string",
+          "default": "http://127.0.0.1:8000",
+          "scope": "machine",
+          "description": "Backend URL. Remote servers require HTTPS."
+        },
+        "verireview.baseBranch": {
+          "type": "string",
+          "default": "",
+          "description": "Base ref; auto-detect origin/HEAD then main when empty."
+        },
+        "verireview.minimumConfidence": {
+          "type": "number",
+          "default": 0.7,
+          "minimum": 0,
+          "maximum": 1
+        },
+        "verireview.maxChangedFiles": {
+          "type": "number",
+          "default": 50,
+          "minimum": 1,
+          "maximum": 100
+        },
+        "verireview.showLowConfidence": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+}
