@@ -3,8 +3,10 @@ import { ApiClient, validateBackendUrl } from "./api";
 import { GitService, ReviewMode, safeFile } from "./git";
 import { Finding, Review } from "./models";
 import { FindingsTree } from "./sidebar";
+import { registerEditorPanel } from "./editorPanel";
 
 export function activate(context: vscode.ExtensionContext): void {
+  registerEditorPanel(context);
   const output = vscode.window.createOutputChannel("VeriReview");
   const diagnostics = vscode.languages.createDiagnosticCollection("VeriReview");
   const tree = new FindingsTree();
@@ -58,7 +60,10 @@ export function activate(context: vscode.ExtensionContext): void {
     );
   };
   register("verireview.output", () => output.show());
-  register("verireview.clear", clear);
+  register("verireview.clear", () => {
+    clear();
+    return vscode.commands.executeCommand("verireview.clearGitAi");
+  });
   register("verireview.configure", async () => {
     const url = await vscode.window.showInputBox({
       prompt: "Backend URL",
@@ -274,10 +279,19 @@ export function activate(context: vscode.ExtensionContext): void {
       status.text = `$(shield) VeriReview: ${current ? `${current.findings.length} Issues` : "Ready"}`;
     }
   }
-  register("verireview.reviewChanges", () => review("working"));
-  register("verireview.reviewStaged", () => review("staged"));
-  register("verireview.reviewBranch", () => review("branch"));
-  register("verireview.reviewFile", () => review("file"));
+  register("verireview.reviewChanges", () =>
+    vscode.commands.executeCommand("verireview.aiGit", "working"),
+  );
+  register("verireview.reviewStaged", () =>
+    vscode.commands.executeCommand("verireview.aiGit", "staged"),
+  );
+  register("verireview.reviewBranch", () =>
+    vscode.commands.executeCommand("verireview.aiGit", "branch"),
+  );
+  register("verireview.reviewFile", () =>
+    vscode.commands.executeCommand("verireview.aiGit", "file"),
+  );
+  register("verireview.reviewBackend", () => review("working"));
   context.subscriptions.push(
     vscode.workspace.onDidChangeTextDocument((event) => {
       if (event.document.uri.scheme === "file" && event.contentChanges.length)

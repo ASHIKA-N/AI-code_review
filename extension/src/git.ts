@@ -36,6 +36,10 @@ export async function safeFile(
 
 export class GitService {
   constructor(private readonly cwd: string) {}
+  async snapshot(file: string, mode: "staged" | "branch"): Promise<string> {
+    if (!safeRelativePath(file)) throw new Error("Unsafe snapshot path.");
+    return this.git(["show", mode === "staged" ? `:${file}` : `HEAD:${file}`]);
+  }
   private async git(args: string[]): Promise<string> {
     try {
       const { stdout } = await exec(

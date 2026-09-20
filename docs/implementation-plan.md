@@ -43,6 +43,33 @@ The workspace initially contains only `prompt.md`. Python 3.14, Node 24, npm 11,
 
 ## First implementation checkpoint
 
+### Editor checklist addition
+
+Git AI integration: all four Git review commands now share the saved direct AI connection
+and checklist, including custom rules. The panel offers matching scopes. Requests send
+bounded per-file diffs; patch line locations are mapped to source additions only. Problems
+and a dedicated Output channel show results. Snapshot mismatches block staged/branch
+navigation, and stale diffs or edited documents invalidate results. The previous backend
+workflow remains an explicitly named legacy command. Live paid-provider verification is
+still pending; HTTP tests use simulated responses.
+
+Added a startup checklist panel with persisted toggle selections, automatic model selection, and
+provider-specific SecretStorage keys for OpenAI, Claude, Grok, and Groq. Setup asks only for a key:
+recognized prefixes select the provider locally, then its model list is checked against a
+supported model preference list. Unknown or ambiguous key formats are rejected locally.
+An optional custom connection accepts an explicit API base URL and model for services
+compatible with OpenAI Chat Completions and Bearer authentication. Custom access is
+checked on review; no credentials are probed across providers. Remote endpoints require HTTPS.
+Direct provider requests
+review the current editor snapshot, including unsaved edits, independently of the backend.
+Findings are validated against selected check IDs and source line bounds, displayed in
+the panel and Problems, and invalidated on edits. Requests support cancellation, timeouts,
+input/output limits, and sanitized provider errors. Existing Git commands retain their
+backend behavior. This addition does not implement local static analyzers or Bedrock.
+
+Provider adapters are covered by mocked HTTP tests; real paid-provider calls and interactive
+VS Code rendering still require manual verification with a user-provided API key.
+
 Implemented the foundation and an initial Git → mock review → diagnostics/sidebar slice.
 This is not completion of all phases. Git rename/deletion modeling, snapshot-aware editor
 navigation, Bedrock, Semgrep and later milestones remain outstanding.

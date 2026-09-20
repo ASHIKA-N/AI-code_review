@@ -74,6 +74,14 @@
       {
         "command": "verireview.health",
         "title": "VeriReview: Check Backend Connection"
+      },
+      {
+        "command": "verireview.openChecklist",
+        "title": "VeriReview: Open AI Checklist"
+      },
+      {
+        "command": "verireview.reviewBackend",
+        "title": "VeriReview: Review My Changes with Backend (Legacy)"
       }
     ],
     "viewsContainers": {
@@ -122,8 +130,16 @@
         "verireview.showLowConfidence": {
           "type": "boolean",
           "default": false
+        },
+        "verireview.showChecklistOnStartup": {
+          "type": "boolean",
+          "default": true,
+          "description": "Open the AI checklist when VS Code starts."
         }
       }
     }
-  }
+  },
+  "activationEvents": [
+    "onStartupFinished"
+  ]
 }
