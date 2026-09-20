@@ -8,7 +8,7 @@ severity information, and clickable navigation to the relevant code.
 
 ---
 
-# Hackathon Write-up
+# Write-up
 
 ## Problem
 
